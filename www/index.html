@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no" />
+    <!--
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    -->
+    <!-- <meta http-equiv="refresh" content="1;"> -->
+    <!--
+    <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no' />
+    -->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=medium-dpi" />
+
+        <title>Meu primeiro app</title>
+
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+        <script>
+            onSuccessLanguage = function (language) {
+                    language = language.value.substring(0, 2);
+                    alert(language);
+                    window.storageLocation.setItem('language', language);
+                    window.storageLocation.getItem('language');
+                    return language
+                };
+            onFailedLanguage = function () {
+                    alert('Error ao capturar o idioma!');
+                    return 'pt';
+                }
+            function checkLanguage() {
+              navigator.globalization.getPreferredLanguage(
+                onSuccessLanguage, onFailedLanguage);
+            };
+            function makeid()
+            {
+                var text = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+                for( var i=0; i < 5; i++ )
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                return text;
+            }
+
+            function recordAudio() {
+                var src = "myaudio.mp3";
+                var mediaRec = new Media(src, onSuccessAudio, onErrorAudio);
+
+                // Record audio
+                mediaRec.startRecord();
+
+                // Stop recording after 10 sec
+                var recTime = 0;
+                var recInterval = setInterval(function() {
+                    recTime = recTime + 1;
+                    setAudioPosition(recTime + " sec");
+                    if (recTime >= 3) {
+                        clearInterval(recInterval);
+                        mediaRec.stopRecord();
+                    }
+                }, 1000);
+            }
+
+
+
+            src = "myrecording.amr";
+            mediaRec = new Media(src, onSuccessAudio, onErrorAudio);
+
+            "use strict";
+
+            var touchEvent = (function() {
+                var
+                  eventName = null
+                , isTouched = false
+                , holdTime = 1;
+
+                return {
+                    startEv: function(event) {
+                        this.isTouched = true;
+                        mediaRec.startRecord();
+                        console.log('start');
+                    },
+                    endEv: function(event) {
+                        this.isTouched = false;
+                        mediaRec.stopRecord();
+                        console.log('end');
+                    },
+                    getEventName: function() {
+                        return this.eventName;
+                    }
+                };
+            })();
+
+            function onSuccessAudio() {
+                alert("recordAudio():Audio Success");
+            }
+
+            // onError Callback
+            //
+            function onErrorAudio(error) {
+                alert('code: '    + error.code    + '\n' +
+                      'message: ' + error.message + '\n');
+            }
+            el = document.getElementById('play');
+            // TouchStart or MouseDown
+            el.addEventListener('touchstart', touchEvent.startEv(f), false);
+            el.addEventListener('mousedown', touchEvent.startEv(f), false);
+
+            // TouchEnd or MouseUp
+            el.addEventListener('touchend', touchEvent.endEv, false);
+            el.addEventListener('mouseup', touchEvent.endEv, false);
+
+        </script>
+    <style>
+        #play {
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+    </style>
+    </head>
+    <body>
+        <div>
+            <button onclick="checkLanguage();">Checar idioma</button>
+
+
+            <div id="play"></div>
+
+
+
+            <button onclick="recordAudio();">Gravar audio</button>
+            <p id="audio_position"></p>
+
+        </div>
+    </body>
+</html>
